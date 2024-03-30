@@ -9,17 +9,26 @@ public class LaserBeam : MonoBehaviour
     public TextMesh laserLengthText;
     public GameObject pillar; // The pillar object to change color
     public Color[] laserLengthColors; // Array of colors for different laser lengths
+    public AudioClip successSound; // The sound to play on success
+    public MoveStairs moveStairs;
 
+    private AudioSource audioSource; // AudioSource component for playing sounds
     private Vector3 hitPoint; // To store the hit point of the first laser
     private float laserLength;
     private Renderer pillarRenderer; // Renderer for the pillar
-
+    private bool allowSound = true;
     void Start()
     {
         if (firstLaserLineRenderer == null)
             firstLaserLineRenderer = GetComponent<LineRenderer>();
 
         pillarRenderer = pillar.GetComponent<Renderer>(); // Get the Renderer component of the pillar
+
+        audioSource = GetComponent<AudioSource>(); // Get the AudioSource component
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>(); // Add an AudioSource component if it doesn't exist
+        }
     }
 
     void Update()
@@ -75,10 +84,17 @@ public class LaserBeam : MonoBehaviour
         if (roundedLaserLength <= 0.33f)
         {
             pillarRenderer.material.color = laserLengthColors[0];
+            if (!moveStairs.isMoving && allowSound)
+            {
+                audioSource.PlayOneShot(successSound); // Play the success sound only when the stairs are stopped
+                allowSound = false;
+
+            }
         }
         else if (roundedLaserLength <= 0.42f)
         {
             pillarRenderer.material.color = laserLengthColors[1];
+            allowSound = true;
         }
         else if (roundedLaserLength <= 0.50f)
         {

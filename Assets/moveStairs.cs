@@ -9,7 +9,7 @@ public class MoveStairs : MonoBehaviour
 
     private Vector3 startingPosition;
     private bool movingLeft = true;
-    private bool isMoving = true;
+    public bool isMoving = true;
 
     void Start()
     {
